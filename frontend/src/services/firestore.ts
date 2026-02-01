@@ -14,6 +14,9 @@ import {
     QueryConstraint,
     DocumentData,
     Unsubscribe,
+    QuerySnapshot,
+    DocumentSnapshot,
+    QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { getFirebaseDb } from './firebase';
 import type { Goal, Task, Habit, Transaction, HealthEntry, LearningItem, Idea, FocusSession } from '../types';
@@ -132,7 +135,7 @@ export const firestoreService = {
             : collectionRef;
 
         const querySnap = await getDocs(q);
-        return querySnap.docs.map((doc) => ({
+        return querySnap.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
             id: doc.id,
             ...convertTimestamps(doc.data()),
         })) as T[];
@@ -174,8 +177,8 @@ export const firestoreService = {
             ? query(collectionRef, ...queryConstraints)
             : collectionRef;
 
-        return onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map((doc) => ({
+        return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+            const data = snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => ({
                 id: doc.id,
                 ...convertTimestamps(doc.data()),
             })) as T[];
@@ -192,7 +195,7 @@ export const firestoreService = {
     ): Unsubscribe {
         const docRef = getUserDoc(userId, collectionName, docId);
 
-        return onSnapshot(docRef, (docSnap) => {
+        return onSnapshot(docRef, (docSnap: DocumentSnapshot<DocumentData>) => {
             if (docSnap.exists()) {
                 callback({ id: docSnap.id, ...convertTimestamps(docSnap.data()) } as T);
             } else {

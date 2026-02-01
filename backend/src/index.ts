@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -41,7 +41,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -61,7 +61,7 @@ app.use('/api/focus', focusRoutes);
 app.use(errorHandler);
 
 // 404 handler
-app.use((req, res) => {
+app.use((_req: Request, res: Response) => {
     res.status(404).json({ error: 'Not found' });
 });
 
