@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { z } from 'zod';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { UserService } from '../services/UserService.js';
 
 const router = Router();
 
@@ -57,10 +58,7 @@ router.patch('/:id', asyncHandler(async (req: AuthRequest, res: Response) => {
 
     // Add XP if completed
     if (data.progress === 100 && existing.progress !== 100) {
-        await prisma.user.update({
-            where: { id: req.user!.id },
-            data: { xp: { increment: 50 } },
-        });
+        await UserService.addXp(req.user!.id, 50);
     }
 
     res.json(item);

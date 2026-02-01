@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { z } from 'zod';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { UserService } from '../services/UserService.js';
 
 const router = Router();
 
@@ -69,19 +70,9 @@ router.post('/xp', asyncHandler(async (req: AuthRequest, res: Response) => {
     const schema = z.object({ amount: z.number().int().min(1) });
     const { amount } = schema.parse(req.body);
 
-    const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
-    if (!user) throw new ApiError('User not found', 404);
+    const result = await UserService.addXp(req.user!.id, amount);
 
-    const newXp = user.xp + amount;
-    const newLevel = Math.floor(newXp / 1000) + 1;
-
-    const updatedUser = await prisma.user.update({
-        where: { id: req.user!.id },
-        data: { xp: newXp, level: newLevel },
-        select: { xp: true, level: true },
-    });
-
-    res.json({ ...updatedUser, xpAdded: amount });
+    res.json(result);
 }));
 
 // Get user stats
