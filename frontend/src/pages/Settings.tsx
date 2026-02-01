@@ -194,7 +194,7 @@ export default function Settings() {
                                     href="https://makersuite.google.com/app/apikey"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    style={{ color: '#0ea5e9' }}
+                                    className="text-[#0ea5e9]"
                                 >
                                     Google AI Studio
                                 </a>

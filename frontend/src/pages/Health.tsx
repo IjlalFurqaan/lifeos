@@ -330,6 +330,7 @@ export default function Health() {
                                     onChange={(e) => setWorkoutData({ ...workoutData, type: e.target.value })}
                                     fullWidth
                                     SelectProps={{ native: true }}
+                                    inputProps={{ 'aria-label': 'Select workout type' }}
                                 >
                                     {workoutTypes.map((type) => (
                                         <option key={type} value={type}>
