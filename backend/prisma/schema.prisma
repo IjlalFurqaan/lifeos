@@ -1,0 +1,215 @@
+// Prisma Schema for LifeOS
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String
+  avatar        String?
+  xp            Int      @default(0)
+  level         Int      @default(1)
+  streak        Int      @default(0)
+  lastActiveAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  goals         Goal[]
+  tasks         Task[]
+  habits        Habit[]
+  transactions  Transaction[]
+  healthEntries HealthEntry[]
+  learningItems LearningItem[]
+  ideas         Idea[]
+  focusSessions FocusSession[]
+  achievements  Achievement[]
+
+  @@map("users")
+}
+
+// Goals
+model Goal {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  category    String    @default("personal")
+  progress    Int       @default(0)
+  targetDate  DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestones  Milestone[]
+
+  @@map("goals")
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  title       String
+  completed   Boolean  @default(false)
+  
+  goalId      String
+  goal        Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@map("milestones")
+}
+
+// Tasks
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  priority    String    @default("medium") // urgent, high, medium, low
+  category    String    @default("general")
+  completed   Boolean   @default(false)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tasks")
+}
+
+// Habits
+model Habit {
+  id             String   @id @default(cuid())
+  name           String
+  icon           String   @default("⭐")
+  color          String   @default("#ff6b6b")
+  frequency      String   @default("daily") // daily, weekly
+  streak         Int      @default(0)
+  bestStreak     Int      @default(0)
+  completedDates String[] // Array of ISO date strings
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("habits")
+}
+
+// Financial Transactions
+model Transaction {
+  id          String   @id @default(cuid())
+  type        String   // income, expense
+  amount      Float
+  category    String
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+// Health Entries
+model HealthEntry {
+  id          String   @id @default(cuid())
+  date        DateTime @default(now())
+  waterIntake Int      @default(0)
+  sleepHours  Float    @default(0)
+  mood        String?  // great, good, okay, bad, terrible
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workouts    Workout[]
+
+  @@unique([userId, date])
+  @@map("health_entries")
+}
+
+model Workout {
+  id            String      @id @default(cuid())
+  type          String
+  duration      Int         // minutes
+  caloriesBurned Int?
+  notes         String?
+
+  healthEntryId String
+  healthEntry   HealthEntry @relation(fields: [healthEntryId], references: [id], onDelete: Cascade)
+
+  @@map("workouts")
+}
+
+// Learning Items
+model LearningItem {
+  id          String    @id @default(cuid())
+  title       String
+  type        String    @default("course") // course, book, skill, project
+  category    String    @default("general")
+  progress    Int       @default(0)
+  completedAt DateTime?
+  notes       String?
+  url         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("learning_items")
+}
+
+// Ideas
+model Idea {
+  id          String   @id @default(cuid())
+  title       String
+  content     String?
+  category    String   @default("general")
+  tags        String[] // Array of tags
+  isPinned    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ideas")
+}
+
+// Focus Sessions
+model FocusSession {
+  id          String   @id @default(cuid())
+  duration    Int      // minutes
+  type        String   @default("pomodoro") // pomodoro, shortBreak, longBreak
+  completedAt DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("focus_sessions")
+}
+
+// Achievements
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String   @default("🏆")
+  unlockedAt  DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("achievements")
+}
