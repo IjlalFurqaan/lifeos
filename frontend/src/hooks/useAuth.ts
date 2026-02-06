@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useStore } from '../store';
 import { authApi, setAuthToken, getAuthToken } from '../services/api';
+import type { User } from '../types';
 
 interface UseAuthReturn {
     isAuthenticated: boolean;
     isLoading: boolean;
-    user: ReturnType<typeof useStore>['user'] | null;
+    user: User | null;
     login: (email: string, password: string) => Promise<void>;
     register: (email: string, password: string, name: string) => Promise<void>;
     logout: () => void;
