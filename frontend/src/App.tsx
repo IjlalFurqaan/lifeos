@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import { darkTheme, lightTheme } from './theme';
 import { useStore } from './store';
 import Sidebar from './components/Sidebar';
+import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Goals from './pages/Goals';
 import Tasks from './pages/Tasks';
@@ -32,16 +33,13 @@ function App() {
             <CssBaseline />
             <Router>
                 <Routes>
-                    {/* Public routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
-                    {/* Protected routes - wrapped in layout */}
                     <Route
                         path="/*"
                         element={
-                            <>
-                                {/* Stars Background */}
+                            <ProtectedRoute>
                                 <div className="stars-container" />
                                 <div className="glow-effect" />
 
@@ -82,7 +80,7 @@ function App() {
                                         </Routes>
                                     </Box>
                                 </Box>
-                            </>
+                            </ProtectedRoute>
                         }
                     />
                 </Routes>
@@ -92,3 +90,4 @@ function App() {
 }
 
 export default App;
+
