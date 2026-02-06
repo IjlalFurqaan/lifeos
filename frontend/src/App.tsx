@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import { darkTheme, lightTheme } from './theme';
 import { useStore } from './store';
 import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Goals from './pages/Goals';
@@ -65,6 +66,7 @@ function App() {
                                             maxWidth: '1400px',
                                         }}
                                     >
+                                        <Header />
                                         <Routes>
                                             <Route path="/" element={<Dashboard />} />
                                             <Route path="/goals" element={<Goals />} />
