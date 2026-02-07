@@ -11,6 +11,7 @@ import {
     Alert,
     Grid,
     Avatar,
+    MenuItem,
 } from '@mui/material';
 import {
     DarkMode,
@@ -18,9 +19,11 @@ import {
     Key,
     Person,
     Refresh,
+    AttachMoney,
 } from '@mui/icons-material';
 import { useStore } from '../store';
 import { initGemini, isGeminiInitialized } from '../services/gemini';
+import { currencies } from '../utils/currencies';
 
 export default function Settings() {
     const { user, updateUser, settings, updateSettings } = useStore();
@@ -141,8 +144,31 @@ export default function Settings() {
                                 }
                                 label="Dark Mode"
                             />
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
                                 Switch between dark and light themes
+                            </Typography>
+
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                                <AttachMoney sx={{ color: 'success.main' }} />
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                                    Default Currency
+                                </Typography>
+                            </Box>
+                            <TextField
+                                select
+                                value={settings.defaultCurrency}
+                                onChange={(e) => updateSettings({ defaultCurrency: e.target.value })}
+                                fullWidth
+                                size="small"
+                            >
+                                {currencies.map((c) => (
+                                    <MenuItem key={c.code} value={c.code}>
+                                        {c.symbol} {c.name} ({c.code})
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                Set your preferred currency for financial tracking
                             </Typography>
                         </CardContent>
                     </Card>

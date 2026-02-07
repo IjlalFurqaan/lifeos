@@ -19,6 +19,7 @@ import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AIChatbot from './components/AIChatbot';
 import './index.css';
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
                                         </Routes>
                                     </Box>
                                 </Box>
+                                <AIChatbot />
                             </ProtectedRoute>
                         }
                     />

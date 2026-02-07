@@ -32,10 +32,16 @@ export const formatRelativeTime = (date: string | Date): string => {
     return formatDate(date);
 };
 
-export const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
+import { getCurrencyByCode } from './currencies';
+
+export const formatCurrency = (amount: number, currencyCode: string = 'USD'): string => {
+    const currency = getCurrencyByCode(currencyCode);
+    const locale = currency?.locale || 'en-US';
+    const code = currency?.code || 'USD';
+
+    return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: 'USD',
+        currency: code,
     }).format(amount);
 };
 

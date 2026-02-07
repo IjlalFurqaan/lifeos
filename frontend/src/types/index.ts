@@ -59,6 +59,7 @@ export interface Transaction {
     id: string;
     type: 'income' | 'expense';
     amount: number;
+    currency?: string; // Currency code (e.g., 'USD', 'EUR', 'INR')
     category: string;
     description: string;
     date: string;
