@@ -128,6 +128,7 @@ Provide actionable advice related to productivity, habits, goals, and personal g
         }
     };
 
+    
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
