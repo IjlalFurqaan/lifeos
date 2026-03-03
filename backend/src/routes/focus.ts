@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { z } from 'zod';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { UserService } from '../services/UserService.js';
 
 const router = Router();
 
@@ -58,10 +59,7 @@ router.post('/', asyncHandler(async (req: AuthRequest, res: Response) => {
 
     // Add XP for focus session
     const xpAmount = data.type === 'pomodoro' ? 20 : 5;
-    await prisma.user.update({
-        where: { id: req.user!.id },
-        data: { xp: { increment: xpAmount } },
-    });
+    await UserService.addXp(req.user!.id, xpAmount);
 
     res.status(201).json(session);
 }));

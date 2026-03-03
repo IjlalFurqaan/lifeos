@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import { z } from 'zod';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { authenticate, AuthRequest } from '../middleware/auth.js';
+import { UserService } from '../services/UserService.js';
 
 const router = Router();
 
@@ -90,10 +91,7 @@ router.post('/:id/workouts', asyncHandler(async (req: AuthRequest, res: Response
     });
 
     // Add XP for workout
-    await prisma.user.update({
-        where: { id: req.user!.id },
-        data: { xp: { increment: 15 } },
-    });
+    await UserService.addXp(req.user!.id, 15);
 
     res.status(201).json(workout);
 }));

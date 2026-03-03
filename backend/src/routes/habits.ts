@@ -35,6 +35,8 @@ router.post('/', asyncHandler(async (req: AuthRequest, res: Response) => {
     res.status(201).json(habit);
 }));
 
+import { UserService } from '../services/UserService.js';
+
 // Helper to calculate streak
 const calculateStreak = (completedDates: string[]): number => {
     if (completedDates.length === 0) return 0;
@@ -105,10 +107,7 @@ router.post('/:id/toggle', asyncHandler(async (req: AuthRequest, res: Response) 
         // Add XP only if completing for today
         const today = new Date().toISOString().split('T')[0];
         if (date === today) {
-            await prisma.user.update({
-                where: { id: req.user!.id },
-                data: { xp: { increment: 5 } },
-            });
+            await UserService.addXp(req.user!.id, 5);
         }
     }
 
