@@ -224,7 +224,7 @@ export default function Focus() {
                         <svg
                             width="280"
                             height="280"
-                            style={{ transform: 'rotate(-90deg)' }}
+                            className="-rotate-90"
                         >
                             {/* Background circle */}
                             <circle
@@ -246,8 +246,8 @@ export default function Focus() {
                                 strokeLinecap="round"
                                 strokeDasharray={2 * Math.PI * 130}
                                 strokeDashoffset={2 * Math.PI * 130 * (1 - progress / 100)}
+                                className="transition-all duration-500 ease-in-out"
                                 style={{
-                                    transition: 'stroke-dashoffset 0.5s ease',
                                     filter: `drop-shadow(0 0 10px ${mode === 'pomodoro' ? 'rgba(14, 165, 233, 0.5)' : 'rgba(34, 197, 94, 0.5)'})`,
                                 }}
                             />
