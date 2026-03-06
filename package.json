@@ -24,6 +24,8 @@
         "docker:down": "docker-compose down"
     },
     "devDependencies": {
+        "@types/express-rate-limit": "^5.1.3",
+        "@types/helmet": "^0.0.48",
         "concurrently": "^8.2.2"
     },
     "engines": {
