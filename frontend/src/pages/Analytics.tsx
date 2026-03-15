@@ -54,13 +54,13 @@ export default function Analytics() {
                 .reduce((acc, s) => acc + s.duration, 0),
         }));
 
-        // Financial summary this month
+        
         const thisMonth = new Date().toISOString().slice(0, 7);
         const monthTransactions = transactions.filter((t) => t.date.startsWith(thisMonth));
         const income = monthTransactions.filter((t) => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
         const expenses = monthTransactions.filter((t) => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
 
-        // Expense breakdown
+        
         const expensesByCategory = monthTransactions
             .filter((t) => t.type === 'expense')
             .reduce((acc, t) => {
