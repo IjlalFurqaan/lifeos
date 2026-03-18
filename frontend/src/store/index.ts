@@ -74,6 +74,7 @@ interface AppState {
         theme: 'dark' | 'light';
         geminiApiKey: string;
         sidebarCollapsed: boolean;
+        defaultCurrency: string;
     };
     updateSettings: (settings: Partial<AppState['settings']>) => void;
 }
@@ -294,6 +295,7 @@ export const useStore = create<AppState>()(
                 theme: 'dark',
                 geminiApiKey: '',
                 sidebarCollapsed: false,
+                defaultCurrency: 'USD',
             },
             updateSettings: (updates) => set((state) => ({
                 settings: { ...state.settings, ...updates },

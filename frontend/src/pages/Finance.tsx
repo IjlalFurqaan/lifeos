@@ -27,18 +27,20 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useStore } from '../store';
 import { generateId, formatCurrency, categoryColors } from '../utils/helpers';
+import { currencies, getCurrencyByCode } from '../utils/currencies';
 import type { Transaction } from '../types';
 
 const expenseCategories = ['food', 'transport', 'entertainment', 'shopping', 'bills', 'health', 'other'];
 const incomeCategories = ['salary', 'freelance', 'investment', 'gift', 'other'];
 
 export default function Finance() {
-    const { transactions, addTransaction, deleteTransaction } = useStore();
+    const { transactions, addTransaction, deleteTransaction, settings } = useStore();
     const [open, setOpen] = useState(false);
     const [view, setView] = useState<'overview' | 'transactions'>('overview');
     const [formData, setFormData] = useState({
         type: 'expense' as Transaction['type'],
         amount: '',
+        currency: settings.defaultCurrency,
         category: 'food',
         description: '',
         date: new Date().toISOString().split('T')[0],
@@ -51,6 +53,7 @@ export default function Finance() {
             id: generateId(),
             type: formData.type,
             amount: parseFloat(formData.amount),
+            currency: formData.currency,
             category: formData.category,
             description: formData.description,
             date: formData.date,
@@ -60,6 +63,7 @@ export default function Finance() {
         setFormData({
             type: 'expense',
             amount: '',
+            currency: settings.defaultCurrency,
             category: 'food',
             description: '',
             date: new Date().toISOString().split('T')[0],
@@ -122,7 +126,7 @@ export default function Finance() {
                                         Income
                                     </Typography>
                                     <Typography variant="h4" sx={{ fontWeight: 700, color: 'success.main' }}>
-                                        {formatCurrency(stats.income)}
+                                        {formatCurrency(stats.income, settings.defaultCurrency)}
                                     </Typography>
                                 </Box>
                                 <TrendingUp sx={{ fontSize: 40, color: 'success.main', opacity: 0.5 }} />
@@ -139,7 +143,7 @@ export default function Finance() {
                                         Expenses
                                     </Typography>
                                     <Typography variant="h4" sx={{ fontWeight: 700, color: 'error.main' }}>
-                                        {formatCurrency(stats.expenses)}
+                                        {formatCurrency(stats.expenses, settings.defaultCurrency)}
                                     </Typography>
                                 </Box>
                                 <TrendingDown sx={{ fontSize: 40, color: 'error.main', opacity: 0.5 }} />
@@ -156,7 +160,7 @@ export default function Finance() {
                                         Balance
                                     </Typography>
                                     <Typography variant="h4" sx={{ fontWeight: 700, color: stats.balance >= 0 ? 'primary.main' : 'error.main' }}>
-                                        {formatCurrency(stats.balance)}
+                                        {formatCurrency(stats.balance, settings.defaultCurrency)}
                                     </Typography>
                                 </Box>
                                 <AccountBalance sx={{ fontSize: 40, color: 'primary.main', opacity: 0.5 }} />
@@ -202,7 +206,7 @@ export default function Finance() {
                                                     ))}
                                                 </Pie>
                                                 <RechartsTooltip
-                                                    formatter={(value: number) => formatCurrency(value)}
+                                                    formatter={(value: number) => formatCurrency(value, settings.defaultCurrency)}
                                                     contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: 8 }}
                                                 />
                                             </PieChart>
@@ -245,7 +249,7 @@ export default function Finance() {
                                                 color: t.type === 'income' ? 'success.main' : 'error.main',
                                             }}
                                         >
-                                            {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
+                                            {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount, t.currency || settings.defaultCurrency)}
                                         </Typography>
                                     </Box>
                                 ))}
@@ -311,7 +315,7 @@ export default function Finance() {
                                                 color: t.type === 'income' ? 'success.main' : 'error.main',
                                             }}
                                         >
-                                            {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
+                                            {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount, t.currency || settings.defaultCurrency)}
                                         </Typography>
                                         <IconButton
                                             size="small"
@@ -348,8 +352,21 @@ export default function Finance() {
                             value={formData.amount}
                             onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                             fullWidth
-                            InputProps={{ startAdornment: '$' }}
+                            InputProps={{ startAdornment: getCurrencyByCode(formData.currency)?.symbol || '$' }}
                         />
+                        <TextField
+                            select
+                            label="Currency"
+                            value={formData.currency}
+                            onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                            fullWidth
+                        >
+                            {currencies.map((c) => (
+                                <MenuItem key={c.code} value={c.code}>
+                                    {c.symbol} {c.name} ({c.code})
+                                </MenuItem>
+                            ))}
+                        </TextField>
                         <TextField
                             label="Description"
                             value={formData.description}
